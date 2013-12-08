@@ -4,6 +4,7 @@
     Author     : Adiputra Setiawan
 --%>
 
+<%@page import="java.sql.Date"%>
 <%@page import="model.ProjectModel"%>
 <%@page import="model.UserModel"%>
 <%@page import="java.util.ArrayList"%>
@@ -308,7 +309,6 @@
                                         out.println("<i class=\"icon-briefcase\"></i>");
                                         out.println(itemsArray.get(i).getProjectname());
                                         out.println("</a>");
-
                                         out.println("</li>");
                                     }
 
@@ -390,7 +390,7 @@
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="icon-file-text"></i>
-                                    Your Project
+                                    Your Dateline Project
                                 </div>
                                 <div class="tools">
                                     <a href="javascript:;" class="collapse"></a>
@@ -402,12 +402,39 @@
                                         ArrayList<ProjectModel> itemsArray = (ArrayList) request.getAttribute("projects");
                                         if (itemsArray.size() > 0) {
                                             for (int i = 0; i < itemsArray.size(); i++) {
+                                                long startdate = itemsArray.get(i).getStart_date().getTime() / (1000 * 60 * 60 * 24);
+                                                long finishdate = itemsArray.get(i).getFinish_date().getTime() / (1000 * 60 * 60 * 24);
+                                                long today = new java.util.Date().getTime() / (1000 * 60 * 60 * 24)-1;
+                                                long lifetime = (finishdate-startdate)+1;
+                                                long timeleft = (finishdate-today);
+                                                long progress = (lifetime-timeleft)*100/lifetime;
                                                 out.println("<h4>" + itemsArray.get(i).getProjectname() + "</h4>");
-                                                out.println("<div class=\"progress progress-striped active\">");
-                                                out.println("<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"80\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 80%\">");
-                                                out.println("<span>80% Complete</span>");
-                                                out.println("</div>");
-                                                out.println("</div>");
+                                                if (today < startdate) {
+                                                    //NotStarted
+                                                    out.println("<div class=\"progress progress-striped\">");
+                                                    out.println("<div class=\"progress-bar progress-bar-info\" role=\"progressbar\" style=\"width:100%\">");
+                                                    out.println("<span>Not Started, Running on "+itemsArray.get(i).getStart_date()+"</span>");
+                                                    out.println("</div>");
+                                                    out.println("</div>");
+                                                }else if(finishdate<today){
+                                                    //Expired
+                                                    out.println("<div class=\"progress progress-striped\">");
+                                                    out.println("<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" style=\"width:100%\">");
+                                                    out.println("<span>Expired"+itemsArray.get(i).getFinish_date()+"</span>");
+                                                    out.println("</div>");
+                                                    out.println("</div>");
+                                                }else{
+                                                    //Running
+                                                    String status="success";
+                                                    if(progress>80){ 
+                                                       status="warning";
+                                                    }
+                                                    out.println("<div class=\"progress progress-striped active\">");
+                                                    out.println("<div class=\"progress-bar progress-bar-"+status+"\" role=\"progressbar\" style=\"width:"+progress+"%\">");
+                                                    out.println("<span>"+timeleft+" day(s) more</span>");
+                                                    out.println("</div>");
+                                                    out.println("</div>");
+                                                }
                                             }
                                         } else {
                                             out.println("<center><h4>No Project</h4></center>");
@@ -442,7 +469,8 @@
                                             </li>
                                             <li class="divider"></li>
                                                 <%
-                                                    if (request.getAttribute("projects") != null) {
+                                                    if (request.getAttribute(
+                                                            "projects") != null) {
                                                         ArrayList<ProjectModel> itemsArray = (ArrayList) request.getAttribute("projects");
                                                         for (int i = 0; i < itemsArray.size(); i++) {
                                                             out.println("<li><a href=\"#\">" + itemsArray.get(i).getProjectname() + "</a></li>");

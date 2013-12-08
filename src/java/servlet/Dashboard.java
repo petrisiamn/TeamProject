@@ -31,8 +31,8 @@ public class Dashboard extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String page = "login.jsp";
-        if (session.getAttribute("userid") != null) {
-            ArrayList<ProjectModel> projects = new Dao().getAllProject((int) session.getAttribute("userid"));
+        if (session.getAttribute("username") != null) {
+            ArrayList<ProjectModel> projects = new Dao().getAllProject((String) session.getAttribute("username"));
             request.setAttribute("projects", projects);
             page = "dashboard.jsp";
         }

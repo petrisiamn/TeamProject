@@ -7,20 +7,11 @@ import java.sql.Date;
  * @author Adiputra Setiawan
  */
 public class UserModel {
-    private int userid;
     private String username;
     private String email;
     private Date regdate;
 
     public UserModel() {
-    }
-
-    public int getUserid() {
-        return userid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
     }
 
     public String getUsername() {
@@ -49,8 +40,9 @@ public class UserModel {
 
     @Override
     public String toString() {
-        return "UserModel{" + "userid=" + userid + ", username=" + username + ", email=" + email + ", regdate=" + regdate + '}';
+        return "UserModel{" + "username=" + username + ", email=" + email + ", regdate=" + regdate + '}';
     }
+
     
     
 }

@@ -46,8 +46,8 @@ public class Account extends HttpServlet {
                 if (new Dao().UserLogin(uname, pass)) {
                     page = "/dashboard";
                     UserModel user = new Dao().getDataUser(uname);
-                    session.setAttribute("userid", user.getUserid());
                     session.setAttribute("username", user.getUsername());
+                    System.out.println(page);
                 } else {
                     page = "login.jsp";
                     request.setAttribute("error", "error");
@@ -67,7 +67,6 @@ public class Account extends HttpServlet {
                 }
                 break;
             case "logout":
-                session.removeAttribute("userid");
                 session.removeAttribute("username");
                 session.invalidate();
                 page = "/dashboard";
