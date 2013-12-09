@@ -305,13 +305,12 @@
 
                                     for (int i = 0; i < itemsArray.size(); i++) {
                                         out.println("<li>");
-                                        out.println("<a href=\"#\">");
-                                        out.println("<i class=\"icon-briefcase\"></i>");
+                                        out.println("<a href='#'>");
+                                        out.println("<i class='icon-briefcase'></i>");
                                         out.println(itemsArray.get(i).getProjectname());
                                         out.println("</a>");
                                         out.println("</li>");
                                     }
-
                                 };
                             %>
                         </ul>
@@ -333,30 +332,13 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                <h4 class="modal-title">Responsive &amp; Scrollable</h4>
+                                <h4 class="modal-title">Create Project</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 300px;"><div class="scroller" style="height: 300px; overflow: hidden; width: auto;" data-always-visible="1" data-rail-visible1="1">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <h4>Some Input</h4>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h4>Some More Input</h4>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
-                                                <p><input type="text" class="col-md-12 form-control"></p>
+                                            <div class="col-md-12">
+                                               
                                             </div>
                                         </div>
                                     </div><div class="slimScrollBar" style="background-color: rgb(161, 178, 189); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; background-position: initial initial; background-repeat: initial initial;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;"></div></div>
@@ -404,36 +386,39 @@
                                             for (int i = 0; i < itemsArray.size(); i++) {
                                                 long startdate = itemsArray.get(i).getStart_date().getTime() / (1000 * 60 * 60 * 24);
                                                 long finishdate = itemsArray.get(i).getFinish_date().getTime() / (1000 * 60 * 60 * 24);
-                                                long today = new java.util.Date().getTime() / (1000 * 60 * 60 * 24)-1;
-                                                long lifetime = (finishdate-startdate)+1;
-                                                long timeleft = (finishdate-today);
-                                                long progress = (lifetime-timeleft)*100/lifetime;
-                                                out.println("<h4>" + itemsArray.get(i).getProjectname() + "</h4>");
+                                                long today = (new Date(new java.util.Date().getTime())).getTime() / (1000 * 60 * 60 * 24);
+                                                long lifetime = (finishdate - startdate) + 1;
+                                                long timeleft = (finishdate - today);
+                                                long progress = (lifetime - timeleft) * 100 / lifetime;
+                                                out.println("<h4><a href='#'>" + itemsArray.get(i).getProjectname() + "</a></h4>");
                                                 if (today < startdate) {
                                                     //NotStarted
-                                                    out.println("<div class=\"progress progress-striped\">");
-                                                    out.println("<div class=\"progress-bar progress-bar-info\" role=\"progressbar\" style=\"width:100%\">");
-                                                    out.println("<span>Not Started, Running on "+itemsArray.get(i).getStart_date()+"</span>");
+                                                    out.println("<div class='progress progress-striped'>");
+                                                    out.println("<div class='progress-bar progress-bar-info' role='progressbar' style='width:100%'>");
+                                                    out.println("<span>Not Started, Running on " + itemsArray.get(i).getStart_date() + "</span>");
                                                     out.println("</div>");
                                                     out.println("</div>");
-                                                }else if(finishdate<today){
+                                                } else if (finishdate < today) {
                                                     //Expired
-                                                    out.println("<div class=\"progress progress-striped\">");
-                                                    out.println("<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" style=\"width:100%\">");
-                                                    out.println("<span>Expired"+itemsArray.get(i).getFinish_date()+"</span>");
+                                                    out.println("<div class='progress progress-striped'>");
+                                                    out.println("<div class='progress-bar progress-bar-danger' role='progressbar' style='width:100%'>");
+                                                    out.println("<span>Expired on " + itemsArray.get(i).getFinish_date() + "</span>");
                                                     out.println("</div>");
                                                     out.println("</div>");
-                                                }else{
+                                                } else {
                                                     //Running
-                                                    String status="success";
-                                                    if(progress>80){ 
-                                                       status="warning";
+                                                    String status = "success";
+                                                    if (progress > 80) {
+                                                        status = "warning";
                                                     }
-                                                    out.println("<div class=\"progress progress-striped active\">");
-                                                    out.println("<div class=\"progress-bar progress-bar-"+status+"\" role=\"progressbar\" style=\"width:"+progress+"%\">");
-                                                    out.println("<span>"+timeleft+" day(s) more</span>");
+                                                    out.println("<div class='progress progress-striped active'>");
+                                                    out.println("<div class='progress-bar progress-bar-" + status + "' role='progressbar' style='width:" + progress + "%'>");
+                                                    out.println("<span>" + timeleft + " day(s) more</span>");
                                                     out.println("</div>");
                                                     out.println("</div>");
+                                                }
+                                                if (i!=(itemsArray.size()-1)) {
+                                                    out.println("<hr>");
                                                 }
                                             }
                                         } else {
@@ -469,11 +454,10 @@
                                             </li>
                                             <li class="divider"></li>
                                                 <%
-                                                    if (request.getAttribute(
-                                                            "projects") != null) {
+                                                    if (request.getAttribute("projects") != null) {
                                                         ArrayList<ProjectModel> itemsArray = (ArrayList) request.getAttribute("projects");
                                                         for (int i = 0; i < itemsArray.size(); i++) {
-                                                            out.println("<li><a href=\"#\">" + itemsArray.get(i).getProjectname() + "</a></li>");
+                                                            out.println("<li><a href='#'>" + itemsArray.get(i).getProjectname() + "</a></li>");
                                                         }
                                                     }
                                                 %>
