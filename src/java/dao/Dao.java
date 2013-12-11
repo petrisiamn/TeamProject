@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import jdbc.MySQLDriver;
+import model.MessageModel;
 import model.ProjectMemberModel;
 import model.ProjectModel;
 import model.UserModel;
@@ -44,7 +45,25 @@ public class Dao {
         }
         return projects;
     }
+    public ProjectModel getDataProject(int projectid){
+        ProjectModel project = new ProjectModel();
+        try {
+            rs = con.getData("SELECT * FROM `project` WHERE `id_project`=" + projectid);
 
+            if (rs.next()) {
+                project.setProjectid(rs.getInt("id_project"));
+                project.setProjectname(rs.getString("name"));
+                project.setDesc(rs.getString("desc"));
+                project.setStart_date(rs.getDate("start_date"));
+                project.setFinish_date(rs.getDate("finish_date"));
+                project.setStatus(rs.getString("status"));
+            }
+            con.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return project;
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO UserModel">
     public ArrayList<UserModel> getMemberProject() {
@@ -107,7 +126,28 @@ public class Dao {
     // your function here
     //</editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO Message">
-    // your function here
+    public ArrayList<MessageModel> getConversation(String username){
+        ArrayList<MessageModel> conversation = new ArrayList<>();
+        try {
+            rs = con.getData("SELECT * FROM `conversation` WHERE `username_to`='"+username+"'");
+            while (rs.next()) {
+                MessageModel message = new MessageModel();
+                message.setIdconversation(rs.getString("id_conversation"));
+                message.setUname_from(rs.getString("username_from"));
+                message.setUname_to(rs.getString("username_to"));
+                message.setDatetime(rs.getDate("datetime"));
+                message.setMsg(rs.getString("text"));
+                conversation.add(message);
+            }
+            con.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conversation;
+    }
+//    public boolean sentMessage(MessageModel messageModel) {
+//        return con.runQuery();
+//    }
     //</editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO ProjectMember">
     public ArrayList<ProjectMemberModel> getProjectMember(int projectid) {
