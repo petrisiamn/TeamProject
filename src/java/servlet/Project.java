@@ -7,6 +7,7 @@ package servlet;
 
 import dao.Dao;
 import java.io.IOException;
+import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,21 +36,36 @@ public class Project extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("do");
         HttpSession session = request.getSession();
-        
+        ProjectModel project;
         String page = "#";
         switch (action) {
             case "create":
+                String projectname = (String) request.getParameter("projectname");
+                String desc = (String) request.getParameter("projectdesc");
+                String dateFrom = (String) request.getParameter("from");
+                String dateTo = (String) request.getParameter("from");
+                Date startDate = new Date(Integer.parseInt(dateFrom.substring(0, 4))-1900, Integer.parseInt(dateFrom.substring(5, 7))-1, Integer.parseInt(dateFrom.substring(8, 10)));
+                Date finisfDate = new Date(Integer.parseInt(dateTo.substring(0, 4))-1900, Integer.parseInt(dateTo.substring(5, 7))-1, Integer.parseInt(dateTo.substring(8, 10)));
                 
+                project = new ProjectModel();
+                project.setProjectname(projectname);
+                project.setDesc(desc);
+                project.setStart_date(startDate);
+                project.setFinish_date(finisfDate);
+                
+                if(new Dao().createProject(project,(String)session.getAttribute("username"))){
+                    page = "dashboard";
+                }
                 break;
             case "view":
                 int projectid = Integer.parseInt(request.getParameter("projectid"));
-                ProjectModel project = new Dao().getDataProject(projectid);
+                project = new Dao().getDataProject(projectid);
                 break;
             case "delete":
 
                 break;
         }
-
+        request.getRequestDispatcher(page).forward(request, response);
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

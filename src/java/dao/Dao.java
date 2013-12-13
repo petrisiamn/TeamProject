@@ -23,6 +23,10 @@ public class Dao {
     }
 
     // <editor-fold defaultstate="collapsed" desc="DAO ProjectModel">
+    public boolean createProject(ProjectModel project,String username){
+        con.runQuery("INSERT INTO `project`(`id_project`, `name`, `desc`, `start_date`, `finish_date`) VALUES (NULL,'"+project.getProjectname()+"','"+project.getDesc()+"','"+project.getStart_date()+"','"+project.getFinish_date()+"')");
+        return con.runQuery("INSERT INTO `projectmember`(`id_project`, `username`, `role`) VALUES (LAST_INSERT_ID(),'" + username + "','project manager')");
+    }
     public ArrayList<ProjectModel> getAllProject(String username) {
         ArrayList<ProjectModel> projects = new ArrayList<>();
         try {
