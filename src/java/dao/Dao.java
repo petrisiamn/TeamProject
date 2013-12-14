@@ -50,11 +50,12 @@ public class Dao {
         return projects;
     }
     public ProjectModel getDataProject(int projectid){
-        ProjectModel project = new ProjectModel();
+        ProjectModel project=null;
         try {
             rs = con.getData("SELECT * FROM `project` WHERE `id_project`=" + projectid);
 
             if (rs.next()) {
+                project = new ProjectModel();
                 project.setProjectid(rs.getInt("id_project"));
                 project.setProjectname(rs.getString("name"));
                 project.setDesc(rs.getString("desc"));
@@ -67,6 +68,9 @@ public class Dao {
             e.printStackTrace();
         }
         return project;
+    }
+    public boolean updateDataProject(ProjectModel project) {
+        return con.runQuery("UPDATE `project` SET `name`='"+project.getProjectname()+"',`desc`='"+project.getDesc()+"',`start_date`='"+project.getStart_date()+"',`finish_date`='"+project.getFinish_date()+"',`status`='"+project.getStatus()+"' WHERE `id_project`="+project.getProjectid());
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO UserModel">

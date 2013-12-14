@@ -8,6 +8,7 @@ package servlet;
 import dao.Dao;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,38 +35,85 @@ public class Project extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("do");
+        boolean redirect = false;
+        String page = "dashboard";
         HttpSession session = request.getSession();
-        ProjectModel project;
-        String page = "#";
-        switch (action) {
-            case "create":
-                String projectname = (String) request.getParameter("projectname");
-                String desc = (String) request.getParameter("projectdesc");
-                String dateFrom = (String) request.getParameter("from");
-                String dateTo = (String) request.getParameter("from");
-                Date startDate = new Date(Integer.parseInt(dateFrom.substring(0, 4))-1900, Integer.parseInt(dateFrom.substring(5, 7))-1, Integer.parseInt(dateFrom.substring(8, 10)));
-                Date finisfDate = new Date(Integer.parseInt(dateTo.substring(0, 4))-1900, Integer.parseInt(dateTo.substring(5, 7))-1, Integer.parseInt(dateTo.substring(8, 10)));
-                
-                project = new ProjectModel();
-                project.setProjectname(projectname);
-                project.setDesc(desc);
-                project.setStart_date(startDate);
-                project.setFinish_date(finisfDate);
-                
-                if(new Dao().createProject(project,(String)session.getAttribute("username"))){
-                    page = "dashboard";
-                }
-                break;
-            case "view":
-                int projectid = Integer.parseInt(request.getParameter("projectid"));
-                project = new Dao().getDataProject(projectid);
-                break;
-            case "delete":
-
-                break;
+        if (session.getAttribute("username") != null) {
+            ArrayList<ProjectModel> projects = new Dao().getAllProject((String) session.getAttribute("username"));
+            request.setAttribute("projects", projects);
         }
-        request.getRequestDispatcher(page).forward(request, response);
+        if (request.getParameter("do") != null) {
+            String action = request.getParameter("do");
+            ProjectModel project = null;
+            switch (action) {
+                case "create":
+                    String projectname = (String) request.getParameter("projectname");
+                    String desc = (String) request.getParameter("projectdesc");
+                    String dateFrom = (String) request.getParameter("from");
+                    String dateTo = (String) request.getParameter("from");
+                    Date startDate = new Date(Integer.parseInt(dateFrom.substring(0, 4)) - 1900, Integer.parseInt(dateFrom.substring(5, 7)) - 1, Integer.parseInt(dateFrom.substring(8, 10)));
+                    Date finisfDate = new Date(Integer.parseInt(dateTo.substring(0, 4)) - 1900, Integer.parseInt(dateTo.substring(5, 7)) - 1, Integer.parseInt(dateTo.substring(8, 10)));
+
+                    project = new ProjectModel();
+                    project.setProjectname(projectname);
+                    project.setDesc(desc);
+                    project.setStart_date(startDate);
+                    project.setFinish_date(finisfDate);
+
+                    if (new Dao().createProject(project, (String) session.getAttribute("username"))) {
+                        page = "dashboard";
+                    }
+                    break;
+                case "view":
+                    if (request.getParameter("projectid") != null) {
+                        int projectid = Integer.parseInt(request.getParameter("projectid"));
+                        ArrayList<ProjectModel> projects = new Dao().getAllProject((String) session.getAttribute("username"));
+                        boolean found = false;
+                        int i = 0;
+                        while (!found && i < projects.size()) {
+                            if (projects.get(i).getProjectid() == projectid) {
+                                project = projects.get(i);
+                                found = true;
+                            }
+                            i++;
+                        }
+                        if (project != null) {
+                            request.setAttribute("project", project);
+                            page = "viewproject.jsp";
+                        } else {
+                            redirect = true;
+                            page = "dashboard";
+                        }
+                    } else {
+                        redirect = true;
+                        page = "dashboard";
+                    }
+                    break;
+                case "delete":
+
+                    break;
+                case "edit":
+                    int projectid = Integer.parseInt(request.getParameter("projectid"));
+                    project = new Dao().getDataProject(projectid);
+                    project.setProjectname((String.valueOf(request.getParameter("projectname"))));
+                    project.setDesc((String.valueOf(request.getParameter("projectdesc"))));
+                    if(new Dao().updateDataProject(project)){
+                        page="project?do=view&projectid="+projectid;
+                    }
+                    break;
+                default:
+                    redirect = true;
+                    page = "dashboard";
+                    break;
+            }
+        } else {
+            redirect = true;
+        }
+        if (redirect) {
+            response.sendRedirect(page);
+        } else {
+            request.getRequestDispatcher(page).forward(request, response);
+        }
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

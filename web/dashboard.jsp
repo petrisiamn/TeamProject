@@ -305,7 +305,7 @@
 
                                     for (int i = 0; i < itemsArray.size(); i++) {
                                         out.println("<li>");
-                                        out.println("<a href='#'>");
+                                        out.println("<a href='project?do=view&projectid=" + itemsArray.get(i).getProjectid() + "'>");
                                         out.println("<i class='icon-briefcase'></i>");
                                         out.println(itemsArray.get(i).getProjectname());
                                         out.println("</a>");
@@ -917,7 +917,6 @@
             });
         </script>
         <!-- END JAVASCRIPTS -->
-        <!--<iframe src="about:blank" style="height: 0px; width: 0px; visibility: hidden; border: none;">This frame prevents back/forward cache problems in Safari.</iframe>-->    
     </body>
 </html>
 <!--datepicker-->

@@ -96,8 +96,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                            data-close-others="true">
                             <i class="icon-envelope"></i>
-                            <!-- <span class="badge"></span>
-                            -->
+                            <!-- <span class="badge"></span>-->
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <li>
@@ -251,14 +250,14 @@
                             </div>
                         </form>
                         <!-- END RESPONSIVE QUICK SEARCH FORM --> </li>
-                    <li class="start open active">
+                    <li class="start">
                         <a href="javascript:;">
                             <i class="icon-home"></i>
                             <span class="title">Home</span>
-                            <span class="arrow open"></span>
+                            <span class="arrow"></span>
                         </a>
                         <ul class="sub-menu">
-                            <li class="active">
+                            <li>
                                 <a href="index.html">
                                     <i class="icon-dashboard"></i>
                                     Dashboard
@@ -284,11 +283,11 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="open active">
                         <a class="active" href="javascript:;">
                             <i class="icon-file-text"></i>
                             <span class="title">Projects</span>
-                            <span class="arrow"></span>
+                            <span class="arrow open"></span>
                         </a>
                         <ul class="sub-menu">
                             <li>
@@ -302,15 +301,17 @@
                                     ArrayList<ProjectModel> itemsArray = (ArrayList) request.getAttribute("projects");
 
                                     for (int i = 0; i < itemsArray.size(); i++) {
-                                        out.println("<li>");
-                                        out.println("<a href=\"#\">");
-                                        out.println("<i class=\"icon-briefcase\"></i>");
+                                        if (Integer.parseInt(request.getParameter("projectid")) == itemsArray.get(i).getProjectid()) {
+                                            out.println("<li class='active'>");
+                                        } else {
+                                            out.println("<li>");
+                                        }
+                                        out.println("<a href='project?do=view&projectid=" + itemsArray.get(i).getProjectid() + "'>");
+                                        out.println("<i class='icon-briefcase'></i>");
                                         out.println(itemsArray.get(i).getProjectname());
                                         out.println("</a>");
-
                                         out.println("</li>");
                                     }
-
                                 };
                             %>
                         </ul>
@@ -327,21 +328,59 @@
             <!-- BEGIN PAGE -->
             <div class="page-content">
                 <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div id="newproject" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                <h4 class="modal-title">Modal title</h4>
-                            </div>
-                            <div class="modal-body">Widget settings form goes here</div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn blue">Save changes</button>
-                                <button type="button" class="btn default" data-dismiss="modal">Close</button>
-                            </div>
+                            <form action="project?do=create" method="post">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">Create new Project</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-horizontal">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Project Name</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" class="form-control" name="projectname" required="">
+                                                        <span class="help-block">
+                                                            helpbox
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Project Description</label>
+                                                    <div class="col-md-9">
+                                                        <textarea class="form-control" rows="3" name="projectdesc" style="resize:none;" required></textarea>
+                                                        <span class="help-block">
+                                                            helpbox
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Date Range</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd">
+                                                            <input type="text" class="form-control" name="from" required>
+                                                            <span class="input-group-addon">to</span>
+                                                            <input type="text" class="form-control" name="to" required>
+                                                        </div>
+                                                        <!-- /input-group -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                    <button class="btn green" type="submit">Create</button>
+                                </div>
+                            </form>
                         </div>
-                        <!-- /.modal-content --> </div>
-                    <!-- /.modal-dialog --> </div>
+                    </div>
+                </div>
                 <!-- /.modal -->
                 <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
                 <!-- BEGIN PAGE HEADER-->
@@ -355,15 +394,15 @@
                         <ul class="page-breadcrumb breadcrumb">
                             <li>
                                 <i class="icon-dashboard"></i>
-                                <a href="index.html">Dashboard</a>
+                                <a href="dashboard">Dashboard</a>
                                 <i class="icon-angle-right"></i>
                             </li>
                             <li>
-                                <a href="project.html">Project</a>
+                                <a href="project?do=view">Project</a>
                                 <i class="icon-angle-right"></i>
                             </li>
                             <li>
-                                <a href="#">ProjectName</a>
+                                <a href="#"><jsp:getProperty name="project" property="projectname" /></a>
                             </li>
                         </ul>
                         <!-- END PAGE TITLE & BREADCRUMB--> </div>
@@ -377,53 +416,58 @@
                             <div class="col-md-3">
                                 <ul class="list-unstyled profile-nav">
                                     <li>
-                                        <img src="assets/img/project-avatar.png" class="img-responsive hidden-xs hidden-sm" alt="">
+                                        <img src="assets/img/profile/project-avatar.png" class="img-responsive hidden-xs hidden-sm" alt="">
                                     </li>
-                                    <li class="">
+                                    <li>
                                         <a href="#tabmember" data-toggle="tab">
                                             Members
                                             <span>1</span>
                                         </a>
                                     </li>
-                                    <li class="active">
+                                    <li>
                                         <a href="#tabtask" data-toggle="tab">Task</a>
                                     </li>
-                                    <li class="">
+                                    <li>
                                         <a href="#tabtimeline" data-toggle="tab">Timeline</a>
                                     </li>
-                                    <li class="">
+                                    <li>
                                         <a href="#tabsetting" data-toggle="tab">Settings</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="col-md-9">
                                 <div class="row">
-                                    <div class="col-md-7 profile-info">
-                                        <h1>ProjectName</h1>
+                                    <div class="col-md-7 col-sm-6 profile-info">
+                                        <h1><jsp:getProperty name="project" property="projectname" /></h1>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt laoreet dolore magna aliquam tincidunt erat volutpat laoreet dolore magna aliquam tincidunt erat volutpat.
+                                            <jsp:getProperty name="project" property="desc" />
                                         </p>
                                         <ul class="list-inline">
                                             <li>
                                                 <i class="icon-calendar"></i>
-                                                18 Jan 1982
+                                                <jsp:getProperty name="project" property="start_date" />
+                                            </li>
+                                            <li>
+                                                <i class="icon-calendar"></i>
+                                                <jsp:getProperty name="project" property="finish_date" />
                                             </li>
                                             <li>
                                                 <i class="icon-briefcase"></i>
-                                                uncomplete
+                                                <jsp:getProperty name="project" property="status" />
                                             </li>
                                         </ul>
                                     </div>
                                     <!--end col-md-8-->
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-sm-6">
                                         <div class="portlet box blue">
                                             <div class="portlet-title">
                                                 <div class="caption">Recent Activity</div>
                                                 <div class="tools">
-                                                    <a href="javascript:;" class="expand"></a>
+                                                    <a id="portletcollapse" href="javascript:;" class="collapse"></a>
                                                 </div>
+
                                             </div>
-                                            <div class="portlet-body" style="display: none;">
+                                            <div class="portlet-body">
                                                 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 290px;"><div class="scroller" data-height="290px" data-always-visible="1" data-rail-visible1="1" style="overflow: hidden; width: auto; height: 290px;">
                                                         <ul class="feeds">
                                                             <li>
@@ -744,13 +788,13 @@
                                                                 </div>
                                                             </li>
                                                         </ul>
-                                                    </div><div class="slimScrollBar" style="background-color: rgb(161, 178, 189); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 92.31613611416026px; background-position: initial initial; background-repeat: initial initial;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;"></div></div>
+                                                    </div><div class="slimScrollBar" style="background-color: rgb(161, 178, 189); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 90.52744886975242px; background-position: initial initial; background-repeat: initial initial;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;"></div></div>
                                             </div>
                                         </div>
                                     </div>
                                     <!--end col-md-4--> </div>
                                 <div class="row tab-content">
-                                    <div class="tab-pane" id="tabmember">
+                                    <div class="tab-pane active" id="tabmember">
                                         <div class="col-md-12">
                                             <!-- BEGIN SAMPLE TABLE PORTLET-->
                                             <div class="portlet">
@@ -852,7 +896,7 @@
                                             </div>
                                             <!-- END SAMPLE TABLE PORTLET--> </div>
                                     </div>
-                                    <div class="tab-pane active" id="tabtask">
+                                    <div class="tab-pane" id="tabtask">
                                         <div class="col-md-12">
                                             <div class="portlet">
                                                 <div class="portlet-title">
@@ -964,17 +1008,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="portlet-body form">
-                                                    <form class="form-horizontal" role="form" method="post">
+                                                    <form class="form-horizontal" role="form" method="post" action="project?do=edit&projectid=<jsp:getProperty name="project" property="projectid" />" autocomplete="off">
                                                         <div class="form-body">
                                                             <div class="form-group">
                                                                 <label class="col-md-3 control-label">Project Name</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" class="form-control"></div>
+                                                                    <input type="text" class="form-control" name="projectname" value='<jsp:getProperty name="project" property="projectname" />' required /></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-md-3 control-label">Description</label>
                                                                 <div class="col-md-9">
-                                                                    <textarea class="form-control" rows="3"></textarea>
+                                                                    <textarea class="form-control" rows="3" name="projectdesc" required=""><jsp:getProperty name="project" property="desc" /></textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1035,15 +1079,7 @@
                 App.init(); // initlayout and core plugins
             });
         </script>
-        <script>
-            $("li").find("a").click(function(e){
-               e.preventDefault();
-               var section = $(this).attr("href");
-               $("html, body").animate({
-                  scrollTop: $(section).offset().top
-               });
-            });
-         </script>
+
         <!-- END JAVASCRIPTS -->
     </body>
 </html>

@@ -44,10 +44,9 @@ public class Account extends HttpServlet {
                 uname = (String) request.getParameter("username");
                 pass = (String) request.getParameter("password");
                 if (new Dao().UserLogin(uname, pass)) {
-                    page = "/dashboard";
                     UserModel user = new Dao().getDataUser(uname);
                     session.setAttribute("username", user.getUsername());
-                    System.out.println(page);
+                    page = "dashboard";
                 } else {
                     page = "login.jsp";
                     request.setAttribute("error", "error");
