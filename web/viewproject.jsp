@@ -4,6 +4,8 @@
     Author     : Adiputra Setiawan
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="model.ProjectModel"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -263,16 +265,16 @@
                                     Dashboard
                                 </a>
                             </li>
-                            <li >
-                                <a href="#">
-                                    <i class="icon-tasks"></i>
-                                    All Tasks
+                            <li>
+                                <a href="project?do=view">
+                                    <i class="icon-briefcase"></i>
+                                    All Project
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
-                                    <i class="icon-asterisk"></i>
-                                    Recent activity
+                                    <i class="icon-tasks"></i>
+                                    All Tasks
                                 </a>
                             </li>
                             <li>
@@ -287,6 +289,7 @@
                         <a class="active" href="javascript:;">
                             <i class="icon-file-text"></i>
                             <span class="title">Projects</span>
+                            <span class="selected"></span>
                             <span class="arrow open"></span>
                         </a>
                         <ul class="sub-menu">
@@ -381,6 +384,52 @@
                         </div>
                     </div>
                 </div>
+                <div id="addmember" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="project?do=addmember&projectid=<jsp:getProperty name="project" property="projectid" />"class="form-horizontal" method="post">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">Add New Worker</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Username Member</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="member" autocomplete="off" placeholder="Username" required=""/>
+                                            <span class="help-block">
+                                                delimiter ";"
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                    <button class="btn green" type="submit">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                                <div class="modal fade" id="errorContainer" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                 <h4 class="modal-title">Modal Title</h4>
+                              </div>
+                              <div class="modal-body">
+                                 Modal body goes here
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                                 <button type="button" class="btn blue">Save changes</button>
+                              </div>
+                           </div>
+                           <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                     </div>
                 <!-- /.modal -->
                 <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
                 <!-- BEGIN PAGE HEADER-->
@@ -421,7 +470,7 @@
                                     <li>
                                         <a href="#tabmember" data-toggle="tab">
                                             Members
-                                            <span>1</span>
+                                            <span>${fn:length(member)}</span>
                                         </a>
                                     </li>
                                     <li>
@@ -806,14 +855,17 @@
                                                 </div>
                                                 <div class="portlet-body" style="display: block;">
                                                     <div class="table-toolbar">
-                                                        <div class="btn-group">
-                                                            <button id="sample_editable_1_new" class="btn green">
-                                                                <i class="icon-plus"></i>
-                                                                Worker
-                                                            </button>
-                                                        </div>
-                                                        <div class="pull-right">
-                                                            <input type="text" class="form-control input-sm hidden-xs" placeholder="Search"></div>
+                                                        <%
+                                                            ProjectModel project = (ProjectModel) request.getAttribute("project");
+                                                            if (project.getPm().equals((String) session.getAttribute("username"))) {
+                                                                out.println("<div class='btn-group'>");
+                                                                out.println("<a href='#errorContainer' class='btn green' data-toggle='modal'>");
+                                                                out.println("<i class='icon-plus'></i>");
+                                                                out.println("Worker");
+                                                                out.println("</a>");
+                                                                out.println("</div>");
+                                                            }
+                                                        %>
                                                     </div>
                                                     <div class="table-responsive">
                                                         <table class="table table-striped table-bordered table-advance table-hover">
@@ -839,53 +891,19 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td class="hidden-xs">1</td>
-                                                                    <td>
-                                                                        <a href="#">RedBull</a>
-                                                                    </td>
-                                                                    <td class="hidden-xs">MikeNilson@mail.com</td>
-                                                                    <td>Project Manager</td>
-                                                                    <td>
-                                                                        <a href="#" class="btn default btn-xs green-stripe">View</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="hidden-xs">2</td>
-                                                                    <td>
-                                                                        <a href="#">Google</a>
-                                                                    </td>
-                                                                    <td class="hidden-xs">AdamLarson@mail.com</td>
-                                                                    <td>Worker</td>
-                                                                    <td>
-                                                                        <a href="#" class="btn default btn-xs green-stripe">View</a>
-                                                                        <a href="#" class="btn default btn-xs red-stripe">Kick</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="hidden-xs">3</td>
-                                                                    <td>
-                                                                        <a href="#">Apple</a>
-                                                                    </td>
-                                                                    <td class="hidden-xs">DanielKim@mail.com</td>
-                                                                    <td>Worker</td>
-                                                                    <td>
-                                                                        <a href="#" class="btn default btn-xs green-stripe">View</a>
-                                                                        <a href="#" class="btn default btn-xs red-stripe">Kick</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="hidden-xs">4</td>
-                                                                    <td>
-                                                                        <a href="#">Microsoft</a>
-                                                                    </td>
-                                                                    <td class="hidden-xs">Nick@mail.com</td>
-                                                                    <td>Worker</td>
-                                                                    <td>
-                                                                        <a href="#" class="btn default btn-xs green-stripe">View</a>
-                                                                        <a href="#" class="btn default btn-xs red-stripe">Kick</a>
-                                                                    </td>
-                                                                </tr>
+                                                                <c:forEach items="${member}" var="member" varStatus="number">
+                                                                    <tr>
+                                                                        <td class="hidden-xs">${number.count}</td>
+                                                                        <td>
+                                                                            <a href="#">${member.user.username}</a>
+                                                                        </td>
+                                                                        <td class="hidden-xs">${member.user.email}</td>
+                                                                        <td>${member.role}</td>
+                                                                        <td>
+                                                                            <a href="#" class="btn default btn-xs green-stripe">View</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -1076,7 +1094,6 @@
                 App.init(); // initlayout and core plugins
             });
         </script>
-
         <!-- END JAVASCRIPTS -->
     </body>
 </html>

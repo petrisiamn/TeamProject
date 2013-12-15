@@ -23,10 +23,11 @@ public class Dao {
     }
 
     // <editor-fold defaultstate="collapsed" desc="DAO ProjectModel">
-    public boolean createProject(ProjectModel project,String username){
-        con.runQuery("INSERT INTO `project`(`id_project`, `name`, `desc`, `start_date`, `finish_date`) VALUES (NULL,'"+project.getProjectname()+"','"+project.getDesc()+"','"+project.getStart_date()+"','"+project.getFinish_date()+"')");
+    public boolean createProject(ProjectModel project, String username) {
+        con.runQuery("INSERT INTO `project`(`id_project`, `name`, `desc`, `start_date`, `finish_date`) VALUES (NULL,'" + project.getProjectname() + "','" + project.getDesc() + "','" + project.getStart_date() + "','" + project.getFinish_date() + "')");
         return con.runQuery("INSERT INTO `projectmember`(`id_project`, `username`, `role`) VALUES (LAST_INSERT_ID(),'" + username + "','project manager')");
     }
+
     public ArrayList<ProjectModel> getAllProject(String username) {
         ArrayList<ProjectModel> projects = new ArrayList<>();
         try {
@@ -50,8 +51,9 @@ public class Dao {
         }
         return projects;
     }
-    public ProjectModel getDataProject(int projectid){
-        ProjectModel project=null;
+
+    public ProjectModel getDataProject(int projectid) {
+        ProjectModel project = null;
         try {
             rs = con.getData("SELECT * FROM `project` WHERE `id_project`=" + projectid);
 
@@ -70,24 +72,27 @@ public class Dao {
         }
         return project;
     }
+
     public boolean updateDataProject(ProjectModel project) {
-        return con.runQuery("UPDATE `project` SET `name`='"+project.getProjectname()+"',`desc`='"+project.getDesc()+"',`start_date`='"+project.getStart_date()+"',`finish_date`='"+project.getFinish_date()+"',`status`='"+project.getStatus()+"' WHERE `id_project`="+project.getProjectid());
+        return con.runQuery("UPDATE `project` SET `name`='" + project.getProjectname() + "',`desc`='" + project.getDesc() + "',`start_date`='" + project.getStart_date() + "',`finish_date`='" + project.getFinish_date() + "',`status`='" + project.getStatus() + "' WHERE `id_project`=" + project.getProjectid());
     }
-    public String getProjectManager(int projectid){
+
+    public String getProjectManager(int projectid) {
         String pm = "";
         MySQLDriver newcon = new MySQLDriver();
-        ResultSet res = newcon.getData("SELECT * FROM `projectmember` WHERE `id_project`="+projectid+" AND `role`='project manager'");
+        ResultSet res = newcon.getData("SELECT * FROM `projectmember` WHERE `id_project`=" + projectid + " AND `role`='project manager'");
         try {
-            if(res.next()){
+            if (res.next()) {
                 pm = res.getString("username");
             }
             newcon.disconnect();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pm;
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO UserModel">
     public ArrayList<UserModel> getMemberProject() {
@@ -150,10 +155,10 @@ public class Dao {
     // your function here
     //</editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO Message">
-    public ArrayList<MessageModel> getConversation(String username){
+    public ArrayList<MessageModel> getConversation(String username) {
         ArrayList<MessageModel> conversation = new ArrayList<>();
         try {
-            rs = con.getData("SELECT * FROM `conversation` WHERE `username_to`='"+username+"'");
+            rs = con.getData("SELECT * FROM `conversation` WHERE `username_to`='" + username + "'");
             while (rs.next()) {
                 MessageModel message = new MessageModel();
                 message.setIdconversation(rs.getString("id_conversation"));
@@ -174,9 +179,10 @@ public class Dao {
 //    }
     //</editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO ProjectMember">
+
     public ArrayList<ProjectMemberModel> getProjectMember(int projectid) {
         ArrayList<ProjectMemberModel> members = new ArrayList<>();
-        rs = con.getData("SELECT * FROM `projectmember` JOIN `user` USING (`username`) WHERE `id_project`='" + projectid + "'");
+        rs = con.getData("SELECT * FROM `projectmember` JOIN `user` USING (`username`) WHERE `id_project`=" + projectid);
         try {
             while (rs.next()) {
                 ProjectMemberModel member = new ProjectMemberModel();
@@ -188,10 +194,43 @@ public class Dao {
                 member.setRole(rs.getString("role"));
                 members.add(member);
             }
+            con.disconnect();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return members;
+    }
+
+    public boolean checkPM(String username, int projectid) {
+        boolean pm = false;
+        rs = con.getData("SELECT * FROM  `projectmember` WHERE  `id_project` =" + projectid + " AND  `username` =  '" + username + "' AND `role` =  'project manager'");
+        try {
+            if (rs.next()) {
+                pm = true;
+            }
+            con.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(pm);
+        return pm;
+    }
+
+    public boolean checkMember(String username, int projectid) {
+        boolean registered = false;
+        rs = con.getData("SELECT * FROM `projectmember` WHERE `id_project`="+projectid+" AND `username`='"+username+"'");
+        try {
+            if(rs.next()){
+                registered=true;
+            }
+            con.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registered;
+    }
+    public boolean addMember(String username,int projectid){
+        return con.runQuery("INSERT INTO `projectmember`(`id_project`, `username`, `role`) VALUES ("+projectid+",'"+username+"','worker')");
     }
     //</editor-fold>
 }

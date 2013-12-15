@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.ProjectMemberModel;
 import model.ProjectModel;
 
 /**
@@ -79,6 +80,8 @@ public class Project extends HttpServlet {
                         }
                         if (project != null) {
                             request.setAttribute("project", project);
+                            ArrayList<ProjectMemberModel> member = new Dao().getProjectMember(project.getProjectid());
+                            request.setAttribute("member", member);
                             page = "viewproject.jsp";
                         } else {
                             redirect = true;
@@ -103,6 +106,24 @@ public class Project extends HttpServlet {
                     if (new Dao().updateDataProject(project)) {
                         page = "project?do=view&projectid=" + projectid;
                     }
+                    break;
+                case "addmember":
+                    int id = Integer.parseInt(request.getParameter("projectid"));
+                    System.out.println(id);
+                    String phrase = request.getParameter("member");
+                    String delims = ";";
+                    String[] addmember = phrase.split(delims);
+                    ArrayList<String> errormember = new ArrayList<>();
+                    for (String array : addmember) {
+                        if (!new Dao().checkMember(array, id)) {
+                            if (!new Dao().addMember(array, id)) {
+                                errormember.add(array);
+                            }
+                        } else {
+                            errormember.add(array);
+                        }
+                    }
+                    page = "project?do=view&projectid=" + Integer.parseInt(request.getParameter("projectid"));
                     break;
                 default:
                     redirect = true;

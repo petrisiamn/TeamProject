@@ -255,6 +255,7 @@
                         <a href="javascript:;">
                             <i class="icon-home"></i>
                             <span class="title">Home</span>
+                            <span class="selected"></span>
                             <span class="arrow"></span>
                         </a>
                         <ul class="sub-menu">
