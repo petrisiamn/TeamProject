@@ -15,7 +15,7 @@
     <head>
         <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
         <meta charset="utf-8" />
-        <title>Dashboard - PMO</title>
+        <title><jsp:getProperty name="project" property="projectname" /> - Team Project</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="description" />
@@ -258,7 +258,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="index.html">
+                                <a href="dashboard">
                                     <i class="icon-dashboard"></i>
                                     Dashboard
                                 </a>
@@ -448,7 +448,7 @@
                                                 <jsp:getProperty name="project" property="start_date" />
                                             </li>
                                             <li>
-                                                <i class="icon-calendar"></i>
+                                                <i class="icon-calendar-empty"></i>
                                                 <jsp:getProperty name="project" property="finish_date" />
                                             </li>
                                             <li>
@@ -802,9 +802,6 @@
                                                     <div class="caption">
                                                         <i class="icon-group"></i>
                                                         Project Members
-                                                    </div>
-                                                    <div class="tools">
-                                                        <a href="javascript:;" class="reload"></a>
                                                     </div>
                                                 </div>
                                                 <div class="portlet-body" style="display: block;">

@@ -85,8 +85,11 @@ public class Project extends HttpServlet {
                             page = "dashboard";
                         }
                     } else {
-                        redirect = true;
-                        page = "dashboard";
+                        if (session.getAttribute("username") != null) {
+                            ArrayList<ProjectModel> projects = new Dao().getAllProject((String) session.getAttribute("username"));
+                            request.setAttribute("projects", projects);
+                            page = "listproject.jsp";
+                        }
                     }
                     break;
                 case "delete":
@@ -97,8 +100,8 @@ public class Project extends HttpServlet {
                     project = new Dao().getDataProject(projectid);
                     project.setProjectname((String.valueOf(request.getParameter("projectname"))));
                     project.setDesc((String.valueOf(request.getParameter("projectdesc"))));
-                    if(new Dao().updateDataProject(project)){
-                        page="project?do=view&projectid="+projectid;
+                    if (new Dao().updateDataProject(project)) {
+                        page = "project?do=view&projectid=" + projectid;
                     }
                     break;
                 default:

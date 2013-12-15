@@ -19,6 +19,7 @@ public class ProjectModel {
     private Date start_date;
     private Date finish_date;
     private String status;
+    private String pm;
 
     public ProjectModel() {
     }
@@ -69,6 +70,14 @@ public class ProjectModel {
 
     public void setFinish_date(Date finish_date) {
         this.finish_date = finish_date;
+    }
+
+    public String getPm() {
+        return pm;
+    }
+
+    public void setPm(String pm) {
+        this.pm = pm;
     }
 
     @Override

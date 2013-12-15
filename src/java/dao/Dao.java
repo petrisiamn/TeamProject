@@ -41,6 +41,7 @@ public class Dao {
                 project.setStart_date(rs.getDate("start_date"));
                 project.setFinish_date(rs.getDate("finish_date"));
                 project.setStatus(rs.getString("status"));
+                project.setPm(getProjectManager(rs.getInt("id_project")));
                 projects.add(project);
             }
             con.disconnect();
@@ -71,6 +72,21 @@ public class Dao {
     }
     public boolean updateDataProject(ProjectModel project) {
         return con.runQuery("UPDATE `project` SET `name`='"+project.getProjectname()+"',`desc`='"+project.getDesc()+"',`start_date`='"+project.getStart_date()+"',`finish_date`='"+project.getFinish_date()+"',`status`='"+project.getStatus()+"' WHERE `id_project`="+project.getProjectid());
+    }
+    public String getProjectManager(int projectid){
+        String pm = "";
+        MySQLDriver newcon = new MySQLDriver();
+        ResultSet res = newcon.getData("SELECT * FROM `projectmember` WHERE `id_project`="+projectid+" AND `role`='project manager'");
+        try {
+            if(res.next()){
+                pm = res.getString("username");
+            }
+            newcon.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return pm;
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DAO UserModel">

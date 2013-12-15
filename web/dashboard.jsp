@@ -15,8 +15,9 @@
 <!--[if !IE]><!--><html lang="en" class="no-js"><!--<![endif]-->
     <!-- BEGIN HEAD -->
     <head>
-        <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->        <meta charset="utf-8" />
-        <title>Dashboard - PMO</title>
+        <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
+        <meta charset="utf-8" />
+        <title>Dashboard - Team Project</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="description" />
@@ -266,16 +267,16 @@
                                     Dashboard
                                 </a>
                             </li>
+                            <li>
+                                <a href="project?do=view">
+                                    <i class="icon-briefcase"></i>
+                                    All Project
+                                </a>
+                            </li>
                             <li >
                                 <a href="#">
                                     <i class="icon-tasks"></i>
                                     All Tasks
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="icon-asterisk"></i>
-                                    Recent activity
                                 </a>
                             </li>
                             <li>
@@ -402,7 +403,7 @@
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="icon-file-text"></i>
-                                    Your Dateline Project
+                                    Your Deadline Project
                                 </div>
                                 <div class="tools">
                                     <a href="javascript:;" class="collapse"></a>
